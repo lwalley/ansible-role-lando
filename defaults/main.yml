@@ -1,0 +1,5 @@
+---
+lando_proxy_domain: lando
+lando_config_file: ~/.lando/config.yml
+lando_dnsmasq_config_file: /usr/local/etc/dnsmasq.conf
+lando_dnsmasq_resolver_directory: /etc/resolver

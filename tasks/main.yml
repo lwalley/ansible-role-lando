@@ -1,0 +1,34 @@
+---
+- name: Ensure lando proxy domain is configured in dnsmasq.
+  blockinfile:
+    path: "{{ lando_dnsmasq_config_file }}"
+    backup: yes
+    block: |
+      address=/{{ lando_proxy_domain }}/127.0.0.1
+    marker: "# {mark} Ansible added: lando proxy domain address."
+    marker_begin: Begin
+    marker_end: End
+- name: Ensure dnsmasq resolver directory exists.
+  file:
+    path: "{{ lando_dnsmasq_resolver_directory }}"
+    owner: root
+    group: wheel
+    mode: 0755
+    state: directory
+  become: yes
+- name: Ensure lando proxy domain is configured in dnsmasq resolver directory.
+  lineinfile:
+    path: "{{ lando_dnsmasq_resolver_directory }}/{{ lando_proxy_domain }}"
+    line: "nameserver 127.0.0.1"
+    backup: no
+    create: yes
+    owner: root
+    group: wheel
+  become: yes
+- name: Ensure lando config file contains proxy domain.
+  lineinfile:
+    path: "{{ lando_config_file }}"
+    line: "proxyDomain: {{ lando_proxy_domain }}"
+    backup: yes
+    create: yes
+  when: lando_config_file is defined
